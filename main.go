@@ -1,13 +1,20 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+	"log"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+)
 
 func main() {
-	r := gin.Default()
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message": "hello",
-		})
-	})
-	r.Run()
+	dsn := "root:root@tcp(127.0.0.1:3306)/startup_db?charset=utf8mb4&parseTime=True&loc=Local"
+	_, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	fmt.Println("Connection to database is good")
 }
