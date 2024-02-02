@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"startup-gin/auth"
 	"startup-gin/handler"
 	"startup-gin/user"
 
@@ -20,7 +21,9 @@ func main() {
 
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
-	userHandler := handler.NewHandler(userService)
+	authService := auth.NewService()
+
+	userHandler := handler.NewHandler(userService, authService)
 
 	router := gin.Default()
 	api := router.Group("api/v1")
