@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"startup-gin/campaign"
 	"startup-gin/helper"
+	"startup-gin/user"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,35 @@ type campaignHandler struct {
 
 func NewCampaignHandler(campaignService campaign.Service) *campaignHandler {
 	return &campaignHandler{campaignService}
+}
+
+func (h *campaignHandler) CreateCampaign(c *gin.Context) {
+	var input campaign.CreateCampaignInput
+
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		errorMessage := gin.H{"errors": errors}
+
+		response := helper.APIResponse("Failed to create campaign", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(user.User)
+
+	input.User = currentUser
+
+	newCampaign, err := h.campaignService.CreateCampaign(input)
+	if err != nil {
+		response := helper.APIResponse("Failed to create campaign", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse("Success to create campaign", http.StatusCreated, "success", campaign.FormatCampaign(newCampaign))
+
+	c.JSON(http.StatusCreated, response)
 }
 
 func (h *campaignHandler) GetCampaigns(c *gin.Context) {
