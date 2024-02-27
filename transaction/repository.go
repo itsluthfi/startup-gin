@@ -3,7 +3,7 @@ package transaction
 import "gorm.io/gorm"
 
 type Repository interface {
-	GetCampaignByID(campaignID int) ([]Transaction, error)
+	GetByCampaignID(campaignID int) ([]Transaction, error)
 }
 
 type repository struct {
@@ -14,7 +14,7 @@ func NewRepository(db *gorm.DB) *repository {
 	return &repository{db}
 }
 
-func (r *repository) GetCampaignByID(campaignID int) ([]Transaction, error) {
+func (r *repository) GetByCampaignID(campaignID int) ([]Transaction, error) {
 	var transactions []Transaction
 
 	err := r.db.Preload("User").Where("campaign_id = ?", campaignID).Order("id desc").Find(&transactions).Error

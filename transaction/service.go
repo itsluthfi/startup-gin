@@ -28,7 +28,7 @@ func (s *service) GetTransactionsByCampaignID(input GetCampaignTransactionsInput
 		return []Transaction{}, errors.New("Not an owner of campaign")
 	}
 
-	transactions, err := s.repository.GetCampaignByID(input.ID)
+	transactions, err := s.repository.GetByCampaignID(input.ID)
 	if err != nil {
 		return transactions, err
 	}
