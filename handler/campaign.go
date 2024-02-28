@@ -53,11 +53,9 @@ func (h *campaignHandler) GetCampaigns(c *gin.Context) {
 
 	campaigns, err := h.campaignService.GetCampaigns(userID)
 	if err != nil {
-		if err != nil {
-			response := helper.APIResponse("Error to get campaigns", http.StatusBadRequest, "error", nil)
-			c.JSON(http.StatusBadRequest, response)
-			return
-		}
+		response := helper.APIResponse("Error to get campaigns", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
 	}
 
 	formatter := campaign.FormatCampaigns(campaigns)
