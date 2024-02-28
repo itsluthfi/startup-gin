@@ -3,6 +3,7 @@ package transaction
 import "gorm.io/gorm"
 
 type Repository interface {
+	Save(transaction Transaction) (Transaction, error)
 	GetByCampaignID(campaignID int) ([]Transaction, error)
 	GetByUserID(userID int) ([]Transaction, error)
 }
@@ -13,6 +14,15 @@ type repository struct {
 
 func NewRepository(db *gorm.DB) *repository {
 	return &repository{db}
+}
+
+func (r *repository) Save(transaction Transaction) (Transaction, error) {
+	err := r.db.Create(&transaction).Error
+	if err != nil {
+		return transaction, err
+	}
+
+	return transaction, nil
 }
 
 func (r *repository) GetByCampaignID(campaignID int) ([]Transaction, error) {
