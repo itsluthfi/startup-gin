@@ -2,8 +2,10 @@ package auth
 
 import (
 	"errors"
+	"os"
 
 	"github.com/golang-jwt/jwt/v5"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 type Service interface {
@@ -14,7 +16,7 @@ type Service interface {
 type jwtService struct {
 }
 
-var SECRET_KEY = []byte("This is secret key")
+var SECRET_KEY = []byte(os.Getenv("SECRET_KEY"))
 
 func NewService() *jwtService {
 	return &jwtService{}
